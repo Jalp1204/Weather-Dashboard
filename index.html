@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>🌤 Weather Dashboard</h1>
+
+    <div class="search-box">
+        <input
+            type="text"
+            id="city-input"
+            placeholder="Enter city name..."
+        >
+        <button id="search-btn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+
+        <button id="location-btn">
+            <i class="fa-solid fa-location-crosshairs"></i>
+        </button>
+    </div>
+
+    <div id="loading" class="hidden">
+        Loading...
+    </div>
+
+    <div id="error" class="hidden"></div>
+
+    <div class="weather-card">
+
+        <h2 id="city-name">City</h2>
+
+        <p id="date">Date</p>
+
+        <img
+            id="weather-icon"
+            src=""
+            alt="Weather Icon"
+        >
+
+        <h1 id="temperature">--°C</h1>
+
+        <h3 id="description">Weather</h3>
+
+        <div class="weather-details">
+
+            <div class="detail">
+                <i class="fa-solid fa-temperature-half"></i>
+                <span id="feels-like">--°C</span>
+            </div>
+
+            <div class="detail">
+                <i class="fa-solid fa-droplet"></i>
+                <span id="humidity">--%</span>
+            </div>
+
+            <div class="detail">
+                <i class="fa-solid fa-wind"></i>
+                <span id="wind-speed">-- km/h</span>
+            </div>
+
+            <div class="detail">
+                <i class="fa-solid fa-eye"></i>
+                <span id="visibility">-- km</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <h2 class="forecast-heading">5-Day Forecast</h2>
+
+    <div id="forecast-container">
+
+        <!-- Forecast cards will come from JavaScript -->
+
+    </div>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
