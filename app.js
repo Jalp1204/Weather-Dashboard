@@ -21,11 +21,17 @@ const forecastContainer=document.getElementById("forecast-container");
 const BASE_URL="https://api.openweathermap.org/data/2.5/weather";
 
 async function getWeather(city) {
+    searchBtn.disabled = true;
+    loading.classList.remove("hidden");
 
     const url = `${BASE_URL}?q=${city}&appid=${API_KEY}&units=metric`;
 
     try {
         const response=await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Something went wrong");
+        }
         const data=await response.json();
 
         if (data.cod != 200) {
@@ -64,18 +70,34 @@ async function getWeather(city) {
         error.classList.add("hidden");
 
     } catch (error) {
-    console.log(error);
+    console.error(error);
+    }
+    finally {
+        searchBtn.disabled = false;
+        loading.classList.add("hidden");
     }
 
  
 }
 
-searchBtn.addEventListener("click", () => {
+function searchWeather() {
     const city = cityInput.value.trim();
+
     if (city === "") {
-        console.log("Please enter a city");
+        error.textContent = "Please enter a city.";
+        error.classList.remove("hidden");
         return;
     }
-    getWeather(city);
 
+    getWeather(city);
+}
+
+searchBtn.addEventListener("click", () => {
+    searchWeather();
+});
+
+cityInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        searchWeather();
+    }
 });
