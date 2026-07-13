@@ -69,8 +69,10 @@ async function getWeather(city) {
 
         error.classList.add("hidden");
 
-    } catch (error) {
-    console.error(error);
+    } catch (err) {
+    console.error(err);
+    error.textContent = "Failed to fetch weather data. Please try again.";
+    error.classList.remove("hidden");
     }
     finally {
         searchBtn.disabled = false;
