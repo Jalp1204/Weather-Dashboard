@@ -184,3 +184,36 @@ height:50px;
 }
 
 }
+
+#forecast-container{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+
+.forecast-card{
+    flex:1;
+    min-width:100px;
+    background:#ffffff;
+    border-radius:12px;
+    padding:15px;
+    text-align:center;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.forecast-card img{
+    width:60px;
+    height:60px;
+}
+
+.forecast-card h4{
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+.forecast-card h3{
+    margin-top:8px;
+    font-size:1.2rem;
+}

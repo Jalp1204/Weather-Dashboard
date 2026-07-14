@@ -19,6 +19,7 @@ const error=document.getElementById("error");
 const forecastContainer=document.getElementById("forecast-container");
 
 const BASE_URL="https://api.openweathermap.org/data/2.5/weather";
+const FORECAST_URL = "https://api.openweathermap.org/data/2.5/forecast";
 
 function updateWeatherUI(data) {
     cityName.textContent=data.name;
@@ -71,6 +72,7 @@ async function getWeather(city) {
         }
 
         updateWeatherUI(data);
+        getForecast(city);
 
 
     } catch (err) {
@@ -109,6 +111,11 @@ cityInput.addEventListener("keydown", (event) => {
 });
 
 locationBtn.addEventListener("click", () => {
+    if (!navigator.geolocation) {
+        error.textContent = "Geolocation is not supported by your browser.";
+        error.classList.remove("hidden");
+        return;
+    }
     navigator.geolocation.getCurrentPosition((position) => {
 
         const latitude = position.coords.latitude;
@@ -117,7 +124,23 @@ locationBtn.addEventListener("click", () => {
         getWeatherByCoords(latitude, longitude);
 
     },(err) => {
-        console.log(err);
+        console.error(err);
+
+        switch (err.code) {
+            case 1:
+                error.textContent = "Location permission denied.";
+                break;
+            case 2:
+                error.textContent = "Unable to determine your location.";
+                break;
+            case 3:
+                error.textContent = "Location request timed out.";
+                break;
+            default:
+                error.textContent = "Failed to get your location.";
+        }
+
+        error.classList.remove("hidden");
     });
 });
 
@@ -144,6 +167,7 @@ async function getWeatherByCoords(latitude, longitude) {
         }
 
         updateWeatherUI(data);
+        getForecastByCoords(latitude, longitude);
 
     } catch (err) {
         console.error(err);
@@ -152,5 +176,104 @@ async function getWeatherByCoords(latitude, longitude) {
     } finally {
         searchBtn.disabled = false;
         loading.classList.add("hidden");
+    }
+}
+
+async function getForecast(city) {
+    forecastContainer.innerHTML = "";
+    const url = `${FORECAST_URL}?q=${city}&appid=${API_KEY}&units=metric`;
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Something went wrong");
+        }
+
+        const data = await response.json();
+
+
+        const forecastList = data.list.filter((item, index) => {
+            return (index + 1) % 8 === 0;
+        });
+
+
+        forecastContainer.innerHTML = "";
+        forecastList.forEach((day) => {
+            const dayName = new Date(day.dt_txt).toLocaleDateString("en-IN", {
+                weekday: "short",
+            });
+
+            const temp = Math.round(day.main.temp);
+
+            const icon = day.weather[0].icon;
+
+            const card = document.createElement("div");
+
+            card.classList.add("forecast-card");
+
+            card.innerHTML = `
+                <h4>${dayName}</h4>
+                <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="Weather Icon">
+                <h3>${temp}°C</h3>
+            `;
+
+            forecastContainer.appendChild(card);
+
+        });
+
+
+        
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function getForecastByCoords(latitude, longitude) {
+    forecastContainer.innerHTML = "";
+
+    const url =
+        `${FORECAST_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Something went wrong");
+        }
+
+        const data = await response.json();
+
+        const forecastList = data.list.filter((item, index) => {
+            return (index + 1) % 8 === 0;
+        });
+
+        forecastList.forEach((day) => {
+            const dayName = new Date(day.dt_txt).toLocaleDateString("en-IN", {
+                weekday: "short",
+            });
+
+            const temp = Math.round(day.main.temp);
+
+            const icon = day.weather[0].icon;
+
+            const card = document.createElement("div");
+
+            card.classList.add("forecast-card");
+
+            card.innerHTML = `
+                <h4>${dayName}</h4>
+                <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="Weather Icon">
+                <h3>${temp}°C</h3>
+            `;
+
+            forecastContainer.appendChild(card);
+        });
+
+    } catch (err) {
+        console.log(err);
+        error.textContent = err.message;
+        error.classList.remove("hidden");
     }
 }
